@@ -17,21 +17,22 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 
 public class BaseCrossPlatformDriver {
     public AppiumDriver<MobileElement> driver;
-    private static AppiumDriverLocalService service;
+//    private static AppiumDriverLocalService service;
 
     @Before
     public void setUp() throws Exception {
-        service = AppiumDriverLocalService.buildDefaultService();
-        service.start();
-
-        if (service == null || !service.isRunning()) {
-            throw new AppiumServerHasNotBeenStartedLocallyException(
-                    "An appium server node is not started!");
-        }
+//        service = AppiumDriverLocalService.buildDefaultService();
+//        service.start();
+//
+//        if (service == null || !service.isRunning()) {
+//            throw new AppiumServerHasNotBeenStartedLocallyException(
+//                    "An appium server node is not started!");
+//        }
         if (System.getProperty("platform").equalsIgnoreCase("ios")) {
             iOSCaps();
         } else if (System.getProperty("platform").equalsIgnoreCase("android")) {
@@ -46,7 +47,7 @@ public class BaseCrossPlatformDriver {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("deviceName", "Android");
         capabilities.setCapability("app", app.getAbsolutePath());
-        driver = new AndroidDriver<>(service.getUrl(), capabilities);
+        driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub/"), capabilities);
     }
 
     private void iOSCaps() throws Exception {
@@ -58,7 +59,7 @@ public class BaseCrossPlatformDriver {
         capabilities.setCapability("platformVersion", "10.2");
         capabilities.setCapability("deviceName", "iPhone 5s");
         capabilities.setCapability("app", app.getAbsolutePath());
-        driver = new IOSDriver<>(service.getUrl(), capabilities);
+        driver = new IOSDriver<>(new URL("http://127.0.0.1:4723/wd/hub/"), capabilities);
     }
 
     @After
@@ -66,9 +67,9 @@ public class BaseCrossPlatformDriver {
         if (driver != null) {
             driver.quit();
         }
-        if (service != null) {
-            service.stop();
-        }
+//        if (service != null) {
+//            service.stop();
+//        }
     }
 
     public void login() {
